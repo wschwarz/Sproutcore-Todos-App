@@ -25,15 +25,30 @@ Todos.Todo.FIXTURES = [
 		"tags": new Array("todo")},
 	{	"guid": "todo-3",
 		"title": "Next, the world!",
-		"isDone": false }
+		"isDone": false}
 ];
 
 Todos.MarkDoneView = SC.Checkbox.extend({
 	titleBinding: '.parentView.content.title',
-	valueBinding: '.parentView.content.isDone'
+	valueBinding: '.parentView.content.isDone',
+});
+
+Todos.CreateTagView = SC.TextField.extend({
+	tagsBinding: '.parentView.content.tags',
+	titleBinding: '.parentView.content.title',
+	insertNewline: function() {
+		var value = this.get('value');
+		var title = this.get('title');
+		
+		if (value) {
+			Todos.todoListController.createTag(title, value);
+			this.set('value', '');
+		}
+	}
 });
 
 Todos.StatsView = SC.TemplateView.extend({
+	templateName: 'stats',
 	remainingBinding: 'Todos.todoListController.remaining',
 	
 	displayRemaining: function() {
@@ -59,6 +74,27 @@ Todos.todoListController = SC.ArrayController.create({
 	  
 	createTodo: function(title) {
 		Todos.store.createRecord(Todos.Todo, {title: title});
+	},
+	
+	createTag: function(title, tag) {
+		this.filterProperty('title', title).forEach(function (item) {
+			var previousTags = item.get('tags');
+			if (previousTags) {
+				previousTags.pushObject(tag);
+				item.set('tags', previousTags);
+			}
+			else {
+				item.set('tags', new Array(tag));
+			}
+		});
+	},
+	
+	sortByTags: function() {
+		query = SC.Query.local(Todos.Todo, { 
+  			orderBy: 'tags'
+		});
+		var items = Todos.store.find(query);
+		Todos.todoListController.set('content', items);
 	},
 	  
 	remaining: function() {
