@@ -1,6 +1,12 @@
 {{#view SC.Button class="sc-buttonclear" classBinding="isActive"
+	target="Todos.tagsController"
+	action="showTagsView"}}
+	Tags
+{{/view}}
+{{#view SC.Button class="sc-buttonclear" classBinding="isActive"
 	target="Todos.todoListController"
 	action="clearCompletedTodos"}}
 	Clear Completed Todos
 {{/view}}
 {{displayRemaining}} remaining
+

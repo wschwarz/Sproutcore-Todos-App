@@ -5,6 +5,6 @@
 
 # Add initial buildfile information here
 config :all, 
-	:required => ["sproutcore/core_foundation","sproutcore/datastore", "todos"],
+	:required => ["sproutcore/core_foundation","sproutcore/datastore"],
 	:theme => "sproutcore/empty_theme"
 

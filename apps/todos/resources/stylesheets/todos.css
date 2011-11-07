@@ -4,6 +4,10 @@
 /* CSS Reset */
 @include global-reset;
 
+.hidden {
+	visibility: hidden;
+	display: none;
+}
 body {
   line-height: 1;
   font-family: "Lucida Grande", sans-serif;
@@ -36,29 +40,8 @@ body, html {
   overflow: visible;
 }
 
-.sc-button {
-	position: relative;
-	display:inline;
-}
-
-$width: 700px;
+$width: 600px;
 $border: 1px solid #bbb;
-
-.left {
-	float:left;
-	width: 48%;
-}
-
-.right {
-	float: right;
-	width: 48%;
-}
-
-.tag-title {
-	font-weight: bold;
-	display:inline;
-	position:relative;
-}
 
 #todos {
   @include box-shadow(rgba(0,0,0,0.6) 0 0 1px);
@@ -69,7 +52,7 @@ $border: 1px solid #bbb;
 
   position: absolute;
   width: $width;
-  left: 45%;
+  left: 50%;
   margin-top: 38px;
   border: $border;
   margin-left: -300px;
@@ -77,7 +60,6 @@ $border: 1px solid #bbb;
   padding: ($header-height + $padding * 2) $padding $padding;
 
   .mark-all-done label {
-	display: inline;
     margin-left: 5px;
     font-weight: bold;
   }
@@ -96,7 +78,7 @@ $border: 1px solid #bbb;
       float: left;
     }
 
-    .sc-buttonclear {
+    .sc-button {
       @include background-image(linear-gradient(#F9F9F9 1%, #DDD, #F2F2F2, #F7F7F7));
       border: 1px solid #828282;
       color: #000;
@@ -113,7 +95,7 @@ $border: 1px solid #bbb;
     }
   }
 
-  #new-todo {
+  input[type='text'] {
     @include border-radius(5px);
     @include single-box-shadow(rgba(0,0,0,0.6), 0, 0, 10px, -2px);
     color: #999;

@@ -1,3 +1,5 @@
+<script type="text/javascript" src="jquery.blockUI.js"></script>
+
 <h1>Todos</h1>
 
 {{#view Todos.CreateTodoView}}
@@ -10,17 +12,20 @@
 		title="Mark All as Done"
 		valueBinding="Todos.todoListController.allAreDone"}}
 		
-<div class="right tag-title">Tags
+<div class="right tag-title">
 	{{#view SC.Button target="Todos.todoListController"
-		action="sortByTags"}}Sort{{/view}}
-	<span style="float:right">Add Tag</span>
+		action="sortByTags"}}Tags{{/view}}
 </div>	
 <br />
 	
 {{#collection SC.TemplateCollectionView contentBinding="Todos.todoListController"
 										itemClassBinding="content.isDone"}}
   {{view Todos.MarkDoneView class="left" }}
-  {{#view Todos.CreateTagView}}
-	<p>&nbsp;{{tags}}<input style="position:relative; float:right;" class="new-todo" {{bindAttr name="title"}} type="text" /></p>
+  {{#view Todos.GetTodosTags}}
+  	{{tags}}
   {{/view}}
 {{/collection}}
+
+<div id="tags" class="hidden">
+	{{view Todos.TagsView id="tags"}}
+</div>
