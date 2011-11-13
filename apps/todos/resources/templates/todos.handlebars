@@ -1,5 +1,19 @@
-<script type="text/javascript" src="jquery.blockUI.js"></script>
-
+<!-- tagging section: hidden by default -->
+<div id="boxes">
+    <div id="dialog" class="window">
+    	{{#view SC.Button class="sc-buttonclear" classBinding="isActive"
+				target="Todos.tagsController"
+				action="closeTagsView"}}
+				<div id="closebutton"> &nbsp; </div>
+		{{/view}}
+    	<h2>Tags</h2>
+        <br />
+        {{view Todos.TagsView id="tags"}}
+       
+    </div>
+    <div id="mask"></div>
+</div>
+<!-- end of tagging section -->
 <h1>Todos</h1>
 
 {{#view Todos.CreateTodoView}}
@@ -8,13 +22,12 @@
 
 {{view Todos.StatsView id="stats"}}
 
-{{view SC.Checkbox class="left mark-all-done"
+{{view SC.Checkbox class="left mark-all-done" style="display:inline"
 		title="Mark All as Done"
 		valueBinding="Todos.todoListController.allAreDone"}}
 		
-<div class="right tag-title">
-	{{#view SC.Button target="Todos.todoListController"
-		action="sortByTags"}}Tags{{/view}}
+<div class="right tag-title" style="display:inline">
+	{{#view SC.Button target="Todos.todoListController" action="sortByTags"}}Tags{{/view}}
 </div>	
 <br />
 	
@@ -22,10 +35,10 @@
 										itemClassBinding="content.isDone"}}
   {{view Todos.MarkDoneView class="left" }}
   {{#view Todos.GetTodosTags}}
-  	{{tags}}
+  	{{tags}}&nbsp;
   {{/view}}
 {{/collection}}
 
-<div id="tags" class="hidden">
-	{{view Todos.TagsView id="tags"}}
-</div>
+
+
+

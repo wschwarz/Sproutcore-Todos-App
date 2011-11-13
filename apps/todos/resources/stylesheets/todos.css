@@ -4,6 +4,69 @@
 /* CSS Reset */
 @include global-reset;
 
+$width: 600px;
+$tagswidth: 250px;
+$border: 1px solid #bbb;
+/* Z-index of #mask must lower than #boxes .window */
+#mask {
+	@include box-shadow(rgba(0,0,0,0.6) 0 0 1px);
+	@include border-radius(8px);
+	$padding: 10px;
+	$header-height: 20px;
+	border: $border;
+	background-color: #fff;
+	padding: ($header-height + $padding * 2) $padding $padding;
+	position:absolute;
+	left: 600;
+	z-index:9000;
+	display:none;
+}
+   
+#boxes .window {
+	top: -15px;
+  position:absolute;
+  margin-right:20px;
+  left:620px;
+  width: $tagswidth;
+  height:200px;
+  display:none;
+  z-index:9999;
+  padding:20px;
+}
+ 
+ 
+/* Customize your modal window here, you can add background image too */
+#boxes #dialog {
+  width:$tagswidth;
+  height:203px;
+}
+
+#closebutton {
+	position:absolute;
+	top: 0px;
+	left:290px;
+	float: right;
+	margin-right: 0px;
+	padding-right: 0px;
+	height: 20px;
+	width: 20px;
+	@include slice("images/close.png");
+}
+
+h2 {
+	font-size: 18pt;
+	text-align: center;
+}
+
+.left {
+	float:left;
+	width:45%;
+}
+.right {
+	float:right;
+	width:45%;
+}
+
 .hidden {
 	visibility: hidden;
 	display: none;
@@ -40,8 +103,29 @@ body, html {
   overflow: visible;
 }
 
-$width: 600px;
-$border: 1px solid #bbb;
+
+.tag-title {
+	font-weight: bold;
+	display:inline;
+	position:relative;
+}
+
+#new-tag {
+	@include border-radius(5px);
+    @include single-box-shadow(rgba(0,0,0,0.6), 0, 0, 10px, -2px);
+    color: #999;
+    background-color: rgb(240,240,240);
+    width: 275px;
+    font-size: 30px;
+    font-family: Helvetica, sans-serif;
+    padding: 5px;
+    border: $border;
+    font-weight: 500;
+
+    &::-webkit-input-placeholder {
+      color: #aaa;
+    }
+}
 
 #todos {
   @include box-shadow(rgba(0,0,0,0.6) 0 0 1px);
@@ -60,6 +144,7 @@ $border: 1px solid #bbb;
   padding: ($header-height + $padding * 2) $padding $padding;
 
   .mark-all-done label {
+  	display:inline;
     margin-left: 5px;
     font-weight: bold;
   }
@@ -95,7 +180,7 @@ $border: 1px solid #bbb;
     }
   }
 
-  input[type='text'] {
+  #new-todo {
     @include border-radius(5px);
     @include single-box-shadow(rgba(0,0,0,0.6), 0, 0, 10px, -2px);
     color: #999;
@@ -134,12 +219,13 @@ $border: 1px solid #bbb;
     }
   }
 
+
   ul {
     margin: 10px 0 2px 0;
-
+	list-style: none;
     li {
       padding: 5px;
-      
+      list-style: none;
       &.is-done {
         color: #B7B7B7;
         text-decoration: line-through;
@@ -147,6 +233,7 @@ $border: 1px solid #bbb;
     }
 
     li:nth-child(odd) {
+      list-style: none;
       background-color: #F7F7F7;
     }
   }

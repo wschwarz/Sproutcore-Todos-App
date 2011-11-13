@@ -4,7 +4,6 @@
 // ==========================================================================
 /* globals Todos */
 
-sc_require('resources/library/jquery.blockUI.js');
 
 Todos = SC.Application.create({
 	store: SC.Store.create().from(SC.Record.fixtures)
@@ -33,7 +32,7 @@ Todos.Todo.FIXTURES = [
 ];
 
 Todos.Tag.FIXTURES = [
-	{	"guid": "tag-1",
+	{	"guid": "1",
 		"name": "TestTag 1"}
 ];
 
@@ -45,7 +44,7 @@ Todos.MarkDoneView = SC.Checkbox.extend({
 Todos.GetTodosTags = SC.TemplateView.extend({
 	titleBinding: '.parentView.content.title',
 	tags: function() {
-		return Todos.tagsController.getTagsByTodo(this.get('title'));
+		return Todos.todoListController.getTagsByTodo(this.get('title'));
 	}.property('title')
 });
 
@@ -74,6 +73,18 @@ Todos.todoListController = SC.ArrayController.create({
 	// Initialize the array controller with an empty array.
 	content: [],
 	  
+	getChecked: function() { return Todos.store.find(Todos.Todo).filterProperty('isDone', true); }.property('@each.isDone'),
+	
+	getTagsByTodo: function(title) {
+		var todo = Todos.store.find(Todos.Todo).filterProperty('title', title).firstObject();
+		var display = " ";
+		todo.get('tags').forEach( function(item) {
+			if (item)
+				display += item.get('name') + ", ";
+		})
+		return display.substring(0, display.length - 2);
+	}.property('@each.tags'),
+	
 	createTodo: function(title) {
 		Todos.store.createRecord(Todos.Todo, {title: title});
 	},
@@ -127,33 +138,6 @@ SC.ready(function () {
 	var todos = Todos.store.find(Todos.Todo);
 	var tags = Todos.store.find(Todos.Tag);
 	todos.firstObject().get('tags').pushObject(tags.firstObject());
-	console.log(todos.firstObject().get('tags').length());
 	Todos.todoListController.set('content', todos);
 	Todos.tagsController.set('content', tags);
 });
-
-$(document).ready(function () {
-	$("#tag-button").click(function() {
-		$('#tags').removeClass('hidden');
-		$.blockUI({ 
-			message: $('#tags')
-		});
-	});
-});
-
-function loadScript(url, callback)
-{
-    // adding the script tag to the head as suggested before
-   var head= document.getElementsByTagName('head')[0];
-   var script= document.createElement('script');
-   script.type= 'text/javascript';
-   script.src= url;
-
-   // then bind the event to the callback function 
-   // there are several events for cross browser compatibility
-   script.onreadystatechange = callback;
-   script.onload = callback
-
-   // fire the loading
-   head.appendChild(script);
-}
