@@ -53,6 +53,11 @@ $border: 1px solid #bbb;
 	@include slice("images/close.png");
 }
 
+.selected {
+	background-color: #C2C2A3;
+	border: 2px solid black;
+}
+
 h2 {
 	font-size: 18pt;
 	text-align: center;

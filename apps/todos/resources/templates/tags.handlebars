@@ -1,8 +1,15 @@
 {{#view Todos.CreateTagView}}
 	<input  id="new-tag" {{bindAttr name="title"}} type="text" />
 {{/view}}
+<br />
+{{#view Todos.ClearControlView}}
+	Clear Text
+{{/view}}
+<br />
 {{#collection SC.TemplateCollectionView contentBinding="Todos.tagsController" }}
-	{{#view Todos.TagsListView}}
-		{{name}}	{{#view Todos.DeleteTag class="right"}} <span {{bindAttr id="name"}}>Delete</span> {{/view}}
+	{{#view Todos.TagsListView id="tagslist"}}
+		<div {{bindAttr class="guid"}}>
+			{{name}}	{{#view Todos.DeleteTag class="right"}} <span {{bindAttr id="name"}}>Delete</span> {{/view}}
+		</div>
 	{{/view}}
 {{/collection}}

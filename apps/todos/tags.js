@@ -1,11 +1,32 @@
 Todos.TagsView = SC.TemplateView.extend({
-	templateName: 'tags',
+	templateName: 'tags'
 });
 
 Todos.TagsListView = SC.TemplateView.extend({
 	nameBinding: '.parentView.content.name',
 	mouseDown: function(evt) {
+		//initialize
+		var tagname = this.get('name');
+		//clear all selections
+		Todos.store.find(Todos.Tag).filterProperty('selected', true).forEach(function(item) {item.set('selected', false);});
+		$("li").removeClass('selected');
+		//set selected tag to selected
+		var selectedTag = Todos.store.find(Todos.Tag).filterProperty('name', tagname).firstObject();
+		if (selectedTag) selectedTag.set('selected', true);
+		$("li:contains('" + tagname +"')").addClass('selected');
+		var selecteds = Todos.store.find(Todos.Tag).filterProperty('selected', true);
 		Todos.tagsController.clickTag(this.get('name'));
+	},
+	keyDown: function(evt) {
+		if (evt.which == 46)
+		{
+			evt.preventDefault();
+		 	var selectedTag = Todos.store.find(Todos.Tag).filterProperty('selected', true).firstObject();
+		 	if (selectedTag)
+		 		Todos.tagsController.deleteTag(selectedTag.get('name'));
+		 	else
+		 		console.log("none selected");
+		}
 	}
 });
 
@@ -27,15 +48,14 @@ Todos.DeleteTag = SC.TemplateView.extend({
 	}
 });
 
+Todos.ClearControlView = SC.TemplateView.extend({
+	mouseDown: function(evt) {
+		$("#new-tag").val(''); 
+	}
+});
 
 Todos.tagsController = SC.ArrayController.create({
 	content: [],
-	
-	// function for displaying tags on main todo view
-	
-	
-	//helper function for tagsController
-	//getChecked: function() { return Todos.store.find(Todos.Todo).filterProperty('isDone', true); }.property(,
 	
 	/* 	addATag function:
 	*	requirements - 
@@ -49,8 +69,8 @@ Todos.tagsController = SC.ArrayController.create({
 		Todos.todoListController.getChecked().forEach(function (item) {
 			console.log("Adding " + tag.get('name') + " to " + item.get('title'));
 			item.get('tags').pushObject(tag);
-			item.set('isDone', false);
 		});
+		Todos.todoListController.refresh();
 	},
 	
 	/*	clickTag function:
@@ -64,7 +84,10 @@ Todos.tagsController = SC.ArrayController.create({
 		Todos.todoListController.getChecked().forEach(function (todoitem) {
 			if (todoitem.get('tags').indexOf(tagToLink) == -1)
 				todoitem.get('tags').pushObject(tagToLink);
+			else //toggle tags
+				todoitem.get('tags').removeObject(tagToLink);
 		});
+		Todos.todoListController.refresh();
 	},
 	
 	/*	deleteTag function:
@@ -81,6 +104,7 @@ Todos.tagsController = SC.ArrayController.create({
 			tagToDelete.destroy();
 			console.log(tagToDelete.get('name') + " deleted");
 		}
+		Todos.todoListController.refresh();
 	},
 	
 	showTagsView: function() {
@@ -109,6 +133,9 @@ Todos.tagsController = SC.ArrayController.create({
 	},
 	
 	closeTagsView: function() {
+		var tagleftover = $("#new-tag").val();
+		if (tagleftover.length > 0)
+			Todos.tagsController.addATag(tagleftover);
     	$('#mask, .window').hide();
 	}
 });

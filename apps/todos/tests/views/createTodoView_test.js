@@ -4,7 +4,7 @@
 // ==========================================================================
 /* globals Todos module test ok equals same stop start */
 var mockedCreateFunction, createMockObject;
-module("Todos", {
+module("Todos.createTodoView", {
 	setup: function () {
 		mockedCreateFunction = Todos.todoListController.createTodo;
     	createMockObject = CoreTest.stub('Todos.todoListController.createTodo', function() { return YES; });

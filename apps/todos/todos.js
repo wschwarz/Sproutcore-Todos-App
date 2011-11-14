@@ -4,7 +4,7 @@
 // ==========================================================================
 /* globals Todos */
 
-
+/************** Application Setup ************************/
 Todos = SC.Application.create({
 	store: SC.Store.create().from(SC.Record.fixtures)
 });
@@ -12,29 +12,40 @@ Todos = SC.Application.create({
 Todos.Todo = SC.Record.extend({ 
 	title: SC.Record.attr(String), 
 	isDone: SC.Record.attr(Boolean, {defaultValue: NO}),
-	tags: SC.Record.toMany('Todos.Tag', { isMaster: YES })
+	tags: SC.Record.toMany('Todos.Tag', { isMaster: YES }),
+	sortOrder: SC.Record.attr(Number, {defaultValue: 0})
 });
 
 Todos.Tag = SC.Record.extend({ 
-	name: SC.Record.attr(String)
+	name: SC.Record.attr(String),
+	selected: SC.Record.attr(Boolean, {defaultValue: NO})
 });
 
 Todos.Todo.FIXTURES = [
 	{	"guid": "todo-1",
 		"title": "Build my first Sproutcore app",
-		"isDone": false	},
+		"isDone": false,
+		"sortOrder": 1 },
 	{	"guid": "todo-2",
 		"title": "Build a really awesome Sproutcore app",
-		"isDone": false},
+		"isDone": false,
+		"sortOrder": 2 },
 	{	"guid": "todo-3",
 		"title": "Next, the world!",
-		"isDone": true}
+		"isDone": true,
+		"sortOrder": 3 }
 ];
 
 Todos.Tag.FIXTURES = [
 	{	"guid": "1",
-		"name": "TestTag 1"}
+		"name": "Projects"},
+	{ 	"guid": "2",
+		"name": "Math"},
+	{ 	"guid": "3",
+		"name": "History"}
 ];
+
+/************** Application Setup End ************************/
 
 Todos.MarkDoneView = SC.Checkbox.extend({
 	titleBinding: '.parentView.content.title',
@@ -89,22 +100,28 @@ Todos.todoListController = SC.ArrayController.create({
 		Todos.store.createRecord(Todos.Todo, {title: title});
 	},
 	
-	createTag: function(title, tag) {
-		this.filterProperty('title', title).forEach(function (item) {
-			var previousTags = item.get('tags');
-			if (previousTags) {
-				previousTags.pushObject(tag);
-				item.set('tags', previousTags);
-			}
-			else {
-				item.set('tags', new Array(tag));
-			}
+	sortByTags: function() {
+		console.log("Sorting Tags");
+		//Setting up the sorting
+		var tagQuery = SC.Query.local(Todos.Tag, { orderBy: 'name'});
+		var tags = Todos.store.find(tagQuery);
+		var todos = Todos.store.find(Todos.Todo);
+		var count = 2;
+		tags.forEach( function(tagitem) {
+			todos.forEach( function (todoitem) {
+				if (todoitem.get('tags').indexOf(tagitem) != -1)
+					todoitem.set('sortOrder', count);
+				if (todoitem.get('tags').length == 0)
+					todoitem.set('sortOrder', 1);
+			});
+			count++;
 		});
+		Todos.todoListController.refresh();
 	},
 	
-	sortByTags: function() {
-		query = SC.Query.local(Todos.Todo, { 
-  			orderBy: 'tags'
+	refresh: function() {
+		var query = SC.Query.local(Todos.Todo, {
+			orderBy: 'sortOrder'
 		});
 		var items = Todos.store.find(query);
 		Todos.todoListController.set('content', items);
@@ -138,6 +155,7 @@ SC.ready(function () {
 	var todos = Todos.store.find(Todos.Todo);
 	var tags = Todos.store.find(Todos.Tag);
 	todos.firstObject().get('tags').pushObject(tags.firstObject());
+	todos.objectAt(1).get('tags').pushObject(tags.objectAt(2));
 	Todos.todoListController.set('content', todos);
 	Todos.tagsController.set('content', tags);
 });
